@@ -1,0 +1,10 @@
+.env.override
+
+venv
+
+db.sqlite3
+
+.idea
+
+*.pyc
+

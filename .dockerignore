@@ -1,0 +1,6 @@
+.env
+.env.override
+
+venv
+
+db.sqlite3
