@@ -1,40 +1,66 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import (
-    CreateView,
     DeleteView,
-    DetailView,
-    ListView,
+    FormView,
     UpdateView,
 )
+from django.views.generic.detail import SingleObjectMixin
 
-from apps.transaction.models import Board
+from apps.transaction.forms import BoardForm
+from apps.transaction.models import (
+    Board,
+    Transaction,
+)
+from apps.transaction.tables import (
+    BoardTable,
+    TransactionTable,
+)
+from django_tables2 import SingleTableView
 
 
-class BoardListView(LoginRequiredMixin, ListView):
+class BoardListView(LoginRequiredMixin, SingleTableView):
     model = Board
-    template_name = 'board_list.html'
-    context_object_name = 'boards'
+    template_name = 'transaction/board_list.html'
+    table_class = BoardTable
+
+    paginate_by = 10
 
     def get_queryset(self):
         return Board.objects.filter(user=self.request.user)
 
 
-class BoardCreateView(LoginRequiredMixin, CreateView):
+class BoardCreateView(LoginRequiredMixin, FormView):
     model = Board
-    template_name = 'board_create.html'
-    fields = ['name', 'description', 'start_date', 'end_date']
+    template_name = 'transaction/board.html'
+    form_class = BoardForm
+    success_url = reverse_lazy('board_list')
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        form.save()
         return super().form_valid(form)
 
+    def form_invalid(self, form):
+        return super().form_invalid(form)
 
-class BoardDetailView(LoginRequiredMixin, DetailView):
+
+class BoardDetailView(LoginRequiredMixin, SingleObjectMixin, SingleTableView):
     model = Board
-    template_name = 'board_detail.html'
+    template_name = 'transaction/board_detail.html'
+    table_class = TransactionTable
     context_object_name = 'board'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        return super().get(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        return Board.objects.get(pk=self.kwargs['pk'])
+
+    def get_queryset(self):
+        return Transaction.objects.filter(board=self.kwargs['pk'])
 
 
 class BoardUpdateView(LoginRequiredMixin, UpdateView):

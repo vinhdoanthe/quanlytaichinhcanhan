@@ -6,15 +6,15 @@ from simple_history.models import HistoricalRecords
 
 class Board(models.Model):
 
-        name = models.CharField(max_length=100)
-        description = models.CharField(max_length=100)
+    name = models.CharField(max_length=200)
+    description = models.TextField(max_length=500)
 
-        user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 
-        start_date = models.DateField()
-        end_date = models.DateField()
+    start_date = models.DateField()
+    end_date = models.DateField()
 
-        history = HistoricalRecords()
+    history = HistoricalRecords()
 
 
 class Transaction(models.Model):
@@ -72,19 +72,18 @@ class Transaction(models.Model):
     recurring_start_date = models.DateField()
     recurring_end_date = models.DateField()
     plan_or_actual = models.CharField(max_length=2, choices=TRANSACTION_PLAN_OR_ACTUAL_CHOICES, default=ACTUAL_TRANSACTION)
-    description = models.CharField(max_length=100)
+    description = models.TextField(max_length=500)
     category = models.ForeignKey('TransactionCategory', on_delete=models.CASCADE)
 
     board = models.ForeignKey('Board', on_delete=models.CASCADE)
-
 
     history = HistoricalRecords()
 
 
 class TransactionCategory(models.Model):
 
-    name = models.CharField(max_length=100)
-    description = models.CharField(max_length=100)
+    name = models.CharField(max_length=200)
+    description = models.TextField(max_length=500)
 
     history = HistoricalRecords()
 

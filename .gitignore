@@ -7,4 +7,14 @@ db.sqlite3
 .idea
 
 *.pyc
+*.pyo
+*.pyd
+**/**.pyc
+**/**.pyo
+**/**.pyd
+
+__pycache__/
+**/__pycache__/
+
+*.egg-info/
 

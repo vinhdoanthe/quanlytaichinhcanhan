@@ -1,0 +1,7 @@
+{% extends 'layout/base.html' %}
+{% load i18n %}
+{% load django_tables2 %}
+<h1>{% translate 'Boards List' %}</h1>
+{% block content %}
+    {% render_table table %}
+{% endblock %}
