@@ -8,6 +8,20 @@
         {{ board.name }}
     </div>
     <div>
+        <a href="{% url 'board_list' %}">{% trans 'Back to list' %}</a>
+    </div>
+    <div>
         {% render_table table %}
+    </div>
+    <hr/>
+    <div>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="{% trans 'Add' %}">
+        </form>
+    </div>
+    <div>
+        <a href="{% url 'board_list' %}">{% trans 'Back to list' %}</a>
     </div>
 {% endblock %}

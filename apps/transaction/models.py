@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from simple_history.models import HistoricalRecords
@@ -65,15 +66,31 @@ class Transaction(models.Model):
 
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     transaction_type = models.CharField(max_length=2, choices=TRANSACTION_TYPE_CHOICES, default=EXPENSE)
-    transaction_fix_or_var = models.CharField(max_length=2, choices=TRANSACTION_FIX_OR_VAR_CHOICES, default=VARIABLE_EXPENSE)
-    date_type = models.CharField(max_length=2, choices=TRANSACTION_DATE_TYPE_CHOICES, default=ONE_TIME_TRANSACTION)
-    recurring_type = models.CharField(max_length=2, choices=TRANSACTION_RECURRING_TYPE_CHOICES, default=MONTHLY_RECURRING)
-    transaction_date = models.DateField(auto_now_add=True)
-    recurring_start_date = models.DateField()
-    recurring_end_date = models.DateField()
-    plan_or_actual = models.CharField(max_length=2, choices=TRANSACTION_PLAN_OR_ACTUAL_CHOICES, default=ACTUAL_TRANSACTION)
-    description = models.TextField(max_length=500)
-    category = models.ForeignKey('TransactionCategory', on_delete=models.CASCADE)
+    transaction_fix_or_var = models.CharField(
+        max_length=2,
+        choices=TRANSACTION_FIX_OR_VAR_CHOICES,
+        default=VARIABLE_EXPENSE,
+    )
+    date_type = models.CharField(
+        max_length=2,
+        choices=TRANSACTION_DATE_TYPE_CHOICES,
+        default=ONE_TIME_TRANSACTION,
+    )
+    recurring_type = models.CharField(
+        max_length=2,
+        choices=TRANSACTION_RECURRING_TYPE_CHOICES,
+        default=MONTHLY_RECURRING,
+    )
+    transaction_date = models.DateField(default=timezone.now())
+    recurring_start_date = models.DateField(null=True, blank=True)
+    recurring_end_date = models.DateField(null=True, blank=True)
+    plan_or_actual = models.CharField(
+        max_length=2,
+        choices=TRANSACTION_PLAN_OR_ACTUAL_CHOICES,
+        default=ACTUAL_TRANSACTION,
+    )
+    description = models.TextField(max_length=500, null=True, blank=True)
+    category = models.ForeignKey('TransactionCategory', null=True, blank=True, on_delete=models.CASCADE)
 
     board = models.ForeignKey('Board', on_delete=models.CASCADE)
 

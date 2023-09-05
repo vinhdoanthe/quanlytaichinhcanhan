@@ -6,8 +6,9 @@ from django.views.generic import (
     UpdateView,
 )
 from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.edit import FormMixin
 
-from apps.transaction.forms import BoardForm
+from apps.transaction.forms import BoardForm, TransactionForm
 from apps.transaction.models import (
     Board,
     Transaction,
@@ -27,7 +28,7 @@ class BoardListView(LoginRequiredMixin, SingleTableView):
     paginate_by = 10
 
     def get_queryset(self):
-        return Board.objects.filter(user=self.request.user)
+        return Board.objects.filter(user=self.request.user).order_by('-id')
 
 
 class BoardCreateView(LoginRequiredMixin, FormView):
@@ -45,11 +46,12 @@ class BoardCreateView(LoginRequiredMixin, FormView):
         return super().form_invalid(form)
 
 
-class BoardDetailView(LoginRequiredMixin, SingleObjectMixin, SingleTableView):
+class BoardDetailView(LoginRequiredMixin, SingleObjectMixin, SingleTableView, FormMixin):
     model = Board
     template_name = 'transaction/board_detail.html'
     table_class = TransactionTable
     context_object_name = 'board'
+    form_class = TransactionForm
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -61,6 +63,22 @@ class BoardDetailView(LoginRequiredMixin, SingleObjectMixin, SingleTableView):
 
     def get_queryset(self):
         return Transaction.objects.filter(board=self.kwargs['pk'])
+
+    def get_success_url(self):
+        return reverse_lazy('board_detail', kwargs={'pk': self.kwargs['pk']})
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        form.instance.board = self.object
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
 
 class BoardUpdateView(LoginRequiredMixin, UpdateView):
