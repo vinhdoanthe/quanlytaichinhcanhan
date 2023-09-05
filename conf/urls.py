@@ -24,5 +24,6 @@ from apps.transaction import urls as transaction_urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
+    path('', include('apps.urls')),
     path('', include(transaction_urls)),
 ]

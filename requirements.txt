@@ -2,3 +2,4 @@ Django
 django-tables2
 django-simple-history
 django-allauth
+crispy-bootstrap5

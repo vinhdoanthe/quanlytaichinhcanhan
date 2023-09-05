@@ -30,8 +30,8 @@ class TransactionTable(tables.Table):
         model = Transaction
         template_name = 'django_tables2/bootstrap5.html'
         fields = (
-            'name', 'description', 'amount', 'transaction_type', 'transaction_fix_or_var',
-            'transaction_date_type', 'transaction_recurring_type', 'transaction_plan_or_actual',
-            'transaction_date',
+            'id', 'amount', 'transaction_type', 'transaction_fix_or_var',
+            'date_type', 'recurring_type', 'plan_or_actual',
+            'transaction_date', 'description',
         )
         exclude = ('board',)
