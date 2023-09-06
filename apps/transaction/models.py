@@ -100,9 +100,21 @@ class Transaction(models.Model):
 class TransactionCategory(models.Model):
 
     name = models.CharField(max_length=200)
-    description = models.TextField(max_length=500)
+    description = models.TextField(max_length=500, null=True, blank=True)
+
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+
+    transaction_type = models.CharField(
+        max_length=2,
+        choices=Transaction.TRANSACTION_TYPE_CHOICES,
+        default=Transaction.EXPENSE,
+    )
 
     history = HistoricalRecords()
 
     def statistic_by_date_range(self, start_date, end_date):
         pass
+
+    @classmethod
+    def get_category_by_transaction_type(cls, transaction_type=Transaction.EXPENSE):
+        return cls.objects.filter(transaction_type=transaction_type)

@@ -1,16 +1,15 @@
 {% extends 'layout/base.html' %}
 
-{% load bootstrap5 %}
 {% load crispy_forms_tags %}
 {% load django_tables2 %}
 {% load i18n %}
 
 {% block content %}
     <div>
-        <h1>{{ board.name }}</h1>
+        <h1>{{ category.name }}</h1>
     </div>
     <div>
-        <a href="{% url 'board_list' %}">{% trans 'Back to list' %}</a>
+        <a href="{% url 'category_list' %}">{% trans 'Back to list' %}</a>
     </div>
     <div>
         {% if filter %}
@@ -23,14 +22,6 @@
     </div>
     <hr/>
     <div>
-        <h3>{% trans 'Add Transaction' %}</h3>
-        <form method="post">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <input type="submit" value="{% trans 'Add' %}" class="btn btn-primary">
-        </form>
-    </div>
-    <div>
-        <a href="{% url 'board_list' %}">{% trans 'Back to list' %}</a>
+        <a href="{% url 'category_list' %}">{% trans 'Back to list' %}</a>
     </div>
 {% endblock %}

@@ -1,6 +1,10 @@
 from django import forms
 
-from apps.transaction.models import Board, Transaction
+from apps.transaction.models import (
+    Board,
+    Transaction,
+    TransactionCategory,
+)
 
 
 class BoardForm(forms.ModelForm):
@@ -31,3 +35,10 @@ class TransactionForm(forms.ModelForm):
             'recurring_end_date': forms.DateInput(attrs={'type': 'date'}),
         }
         localized_fields = ('amount',)
+
+
+class CategoryForm(forms.ModelForm):
+
+    class Meta:
+        model = TransactionCategory
+        fields = ('name', 'description', 'transaction_type')

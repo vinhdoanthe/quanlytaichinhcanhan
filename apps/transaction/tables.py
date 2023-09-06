@@ -2,7 +2,7 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.transaction.models import (
     Board,
-    Transaction,
+    Transaction, TransactionCategory,
 )
 from django_tables2 import (
     columns,
@@ -35,3 +35,17 @@ class TransactionTable(tables.Table):
             'transaction_date', 'description',
         )
         exclude = ('board',)
+
+
+class TransactionCategoryTable(tables.Table):
+
+    detail_link = columns.LinkColumn(
+        'category_detail',
+        args=[A('pk')],
+        text=_('Detail'),
+    )
+
+    class Meta:
+        model = TransactionCategory
+        template_name = 'django_tables2/bootstrap5.html'
+        fields = ('name', 'description', 'detail_link')

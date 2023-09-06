@@ -3,3 +3,5 @@ django-tables2
 django-simple-history
 django-allauth
 crispy-bootstrap5
+django-filter
+django-bootstrap-v5

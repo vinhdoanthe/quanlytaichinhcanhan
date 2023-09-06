@@ -1,0 +1,8 @@
+{% extends 'layout/base.html' %}
+{% load django_tables2 %}
+{% load i18n %}
+
+{% block content %}
+    <a href="{% url 'category_create' %}">{% trans 'Add Category' %}</a>
+    {% render_table table %}
+{% endblock %}

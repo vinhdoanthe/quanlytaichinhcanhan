@@ -44,10 +44,10 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-
+    'bootstrap5',
     'crispy_forms',
     'crispy_bootstrap5',
-
+    'django_filters',
     'django_tables2',
     'simple_history',
 

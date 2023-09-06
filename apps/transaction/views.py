@@ -8,16 +8,27 @@ from django.views.generic import (
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import FormMixin
 
-from apps.transaction.forms import BoardForm, TransactionForm
+from apps.transaction.filters import TransactionFilter
+from apps.transaction.forms import (
+    BoardForm,
+    CategoryForm,
+    TransactionForm,
+)
 from apps.transaction.models import (
     Board,
     Transaction,
+    TransactionCategory,
 )
 from apps.transaction.tables import (
     BoardTable,
+    TransactionCategoryTable,
     TransactionTable,
 )
-from django_tables2 import SingleTableView
+from django_filters.views import FilterView
+from django_tables2 import (
+    SingleTableMixin,
+    SingleTableView,
+)
 
 
 class BoardListView(LoginRequiredMixin, SingleTableView):
@@ -25,7 +36,7 @@ class BoardListView(LoginRequiredMixin, SingleTableView):
     template_name = 'transaction/board_list.html'
     table_class = BoardTable
 
-    paginate_by = 10
+    paginate_by = 25
 
     def get_queryset(self):
         return Board.objects.filter(user=self.request.user).order_by('-id')
@@ -46,12 +57,13 @@ class BoardCreateView(LoginRequiredMixin, FormView):
         return super().form_invalid(form)
 
 
-class BoardDetailView(LoginRequiredMixin, SingleObjectMixin, SingleTableView, FormMixin):
+class BoardDetailView(LoginRequiredMixin, SingleObjectMixin, SingleTableMixin, FormMixin, FilterView):
     model = Board
     template_name = 'transaction/board_detail.html'
     table_class = TransactionTable
     context_object_name = 'board'
     form_class = TransactionForm
+    filterset_class = TransactionFilter
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -93,3 +105,48 @@ class BoardDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'board_delete.html'
     success_url = reverse_lazy('board_list')
     context_object_name = 'board'
+
+
+class CategoryListView(LoginRequiredMixin, SingleTableView):
+    model = TransactionCategory
+    template_name = 'transaction/category_list.html'
+    table_class = TransactionCategoryTable
+
+    paginate_by = 25
+
+    def get_queryset(self):
+        return TransactionCategory.objects.filter(user=self.request.user).order_by('-id')
+
+
+class CategoryDetailView(LoginRequiredMixin, SingleObjectMixin, SingleTableMixin, FilterView):
+    model = TransactionCategory
+    template_name = 'transaction/category_detail.html'
+    table_class = TransactionTable
+    context_object_name = 'category'
+    filterset_class = TransactionFilter
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        return super().get(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        return TransactionCategory.objects.get(pk=self.kwargs['pk'])
+
+    def get_queryset(self):
+        return Transaction.objects.filter(category=self.kwargs['pk'])
+
+
+class CategoryCreateView(LoginRequiredMixin, FormView):
+    model = TransactionCategory
+    template_name = 'transaction/category.html'
+    form_class = CategoryForm
+    success_url = reverse_lazy('category_list')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.save()
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        return super().form_invalid(form)
