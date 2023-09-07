@@ -118,3 +118,6 @@ class TransactionCategory(models.Model):
     @classmethod
     def get_category_by_transaction_type(cls, transaction_type=Transaction.EXPENSE):
         return cls.objects.filter(transaction_type=transaction_type)
+
+    def __str__(self):
+        return self.name
