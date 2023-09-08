@@ -5,6 +5,7 @@ from django_filters import (
     FilterSet,
 )
 from django_filters.widgets import DateRangeWidget
+from django import forms
 
 
 class TransactionFilter(FilterSet):
@@ -22,3 +23,9 @@ class TransactionFilter(FilterSet):
             'transaction_fix_or_var',
             'amount',
         ]
+        widgets = {
+            'amount': forms.NumberInput(attrs={
+                'step': '1000',
+                'class': 'form-control',
+            }),
+        }

@@ -23,12 +23,21 @@
     </div>
     <hr/>
     <div>
+    {% comment %}
         <h3>{% trans 'Add Transaction' %}</h3>
         <form method="post">
             {% csrf_token %}
             {{ form|crispy }}
             <input type="submit" value="{% trans 'Add' %}" class="btn btn-primary">
         </form>
+    {% endcomment %}
+        <h3>{% trans 'Add Transactions' %}</h3>
+    {% csrf_token %}
+        {{ formset.management_form }}
+
+        {% for form in formset %}
+            {% crispy form form_helper %}
+        {% endfor %}
     </div>
     <div>
         <a href="{% url 'board_list' %}">{% trans 'Back to list' %}</a>

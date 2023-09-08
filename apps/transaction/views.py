@@ -12,7 +12,7 @@ from apps.transaction.filters import TransactionFilter
 from apps.transaction.forms import (
     BoardForm,
     CategoryForm,
-    TransactionForm,
+    TransactionForm, DailyTransactionFormSet, DailyTransactionFormHelper, DailyTransactionForm,
 )
 from apps.transaction.models import (
     Board,
@@ -62,13 +62,19 @@ class BoardDetailView(LoginRequiredMixin, SingleObjectMixin, SingleTableMixin, F
     template_name = 'transaction/board_detail.html'
     table_class = TransactionTable
     context_object_name = 'board'
-    form_class = TransactionForm
+    form_class = DailyTransactionForm
     filterset_class = TransactionFilter
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
         return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['formset'] = DailyTransactionFormSet()
+        context['form_helper'] = DailyTransactionFormHelper()
+        return context
 
     def get_object(self, queryset=None):
         return Board.objects.get(pk=self.kwargs['pk'])
