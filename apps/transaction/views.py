@@ -64,6 +64,7 @@ class BoardDetailView(LoginRequiredMixin, SingleObjectMixin, SingleTableMixin, F
     context_object_name = 'board'
     form_class = DailyTransactionForm
     filterset_class = TransactionFilter
+    paginate_by = 25
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
