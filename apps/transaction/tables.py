@@ -16,6 +16,7 @@ class BoardTable(tables.Table):
         'board_detail',
         args=[A('pk')],
         text=_('Detail'),
+        orderable=False,
     )
 
     class Meta:
@@ -43,6 +44,7 @@ class TransactionCategoryTable(tables.Table):
         'category_detail',
         args=[A('pk')],
         text=_('Detail'),
+        orderable=False,
     )
 
     class Meta:
